@@ -1,0 +1,6 @@
+.git/
+.idea/
+lib/
+bin/
+obj/
+Folder.DotSettings.user
