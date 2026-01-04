@@ -26,7 +26,7 @@ public class ImmediateModeGUI {
         color.a = 1.0f;
         GUI.backgroundColor = color;
         GUI.color = Color.white;
-        window = GUILayout.Window(0, window, MainWindow, "Tails of Iron Modbox");
+        window = GUILayout.Window(0, window, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
     }
     
     private void GeneralOptions() {

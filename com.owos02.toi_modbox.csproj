@@ -13,6 +13,9 @@
       https://nuget.samboy.dev/v3/index.json
     </RestoreAdditionalProjectSources>
     <RootNamespace>com.owos02.toi_modbox</RootNamespace>
+    <Title>Tails of Iron Modbox</Title>
+    <Authors>owos02</Authors>
+    <Description>A BepInEx plugin for the game Tails of Iron</Description>
   </PropertyGroup>
 
   <ItemGroup>

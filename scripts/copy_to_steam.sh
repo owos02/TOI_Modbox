@@ -1,24 +1,30 @@
 #! /bin/bash
 clear
 now=$(date)
-echo "Start: $now"
+echo "Script Start: $now"
 
-echo "Copying files"
-# Location of the BepInEx/plugins folder
+# Game Folder/s
 readonly GAME_FOLDER='.local/share/Steam/steamapps/common/Tails of Iron'
-
-readonly GAME_FOLDER_MANAGED="$GAME_FOLDER/TOI_Data/Managed"
 readonly BEPIN_PLUGINS_FOLDER="$GAME_FOLDER/BepInEx/plugins"
+readonly COM_OWOS02_MODBOX_FOLDER="$BEPIN_PLUGINS_FOLDER/com.owos02.toi_modbox"
 
-# Locaiton of the building binaries folder from the mod
+# Dev Folder
 readonly MOD_BIN_FOLDER='bin/Debug/netstandard2.0'
 
-cp -v "$MOD_BIN_FOLDER/com.owos02.toi_modbox.dll" "$HOME/$BEPIN_PLUGINS_FOLDER"
-echo "Copying done!"
+echo "Check existance of folder: $HOME/$COM_OWOS02_MODBOX_FOLDER"
+if [ ! -d "$HOME/$COM_OWOS02_MODBOX_FOLDER" ]; then
+  echo "Directory not found! Generating!"
+  mkdir "$HOME/$COM_OWOS02_MODBOX_FOLDER"
+else
+  echo "Directory found!"
+fi
+
+echo "Copy: Start"
+  cp -v "$MOD_BIN_FOLDER/com.owos02.toi_modbox.dll" "$HOME/$COM_OWOS02_MODBOX_FOLDER"
+echo "Copy: Finished"
 now=$(date)
-echo "Finish: $now"
+echo "Script End: $now"
 
-echo "Starting Game:"
-
+echo "Launching game"
 steam steam://rungameid/1283410
 
