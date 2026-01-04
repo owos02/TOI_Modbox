@@ -1,72 +1,99 @@
 using BepInEx.Configuration;
 using UnityEngine;
 
-namespace com.owos02.toi_modbox;
+namespace com.owos02.toi_modbox {
+    static class PluginColors {
+        internal static Color red = new Color(f(237), f(135), f(150));
+        internal static Color green = new Color(f(166), f(218), f(149));
 
-public class ImmediateModeGUI {
-    private Settings? _settings;
-    private bool isGUIactive;
-    private static Rect window = new Rect(50, 50, 300, 200);
-    internal bool active {
-        get => isGUIactive;
-        set => isGUIactive = value;
-    }
-
-    internal ImmediateModeGUI( ) {
-        isGUIactive = false;
-    }
-    
-    internal void Run(ref Settings s) {
-        if (_settings == null)
-            _settings = s;
-        if (!isGUIactive && !s.configAlwaysShowModBox.Value)
-            return;
-        
-        var color = Color.black;
-        color.a = 1.0f;
-        GUI.backgroundColor = color;
-        GUI.color = Color.white;
-        window = GUILayout.Window(0, window, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
-    }
-    
-    private void GeneralOptions() {
-        GUILayout.Label("General Settings");
-        ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
-        ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
-        
-    }
-    
-    private void PlayerOptions() {
-        GUILayout.Label("Player Settings");
-        ButtonToggle("Infinite HP", Plugin.settings.configInfiniteHealth);
-        ButtonToggle("Infinite Health Flask", Plugin.settings.configInfiniteHealthFlask);
+        /// <summary>
+        /// To Float
+        /// Converts the color from 0-255 to 0f-1f
+        /// Name is shortened for shortening
+        /// </summary>
+        /// <param name="strength"> 0-255 </param>
+        /// <returns></returns>
+        private static float f(int strength) {
+            if (strength < 0) return 0f;
+            if (strength > 255) return 1f;
+            return strength / 255f;
+        }
     }
 
-    private void MainWindow(int windowID) {
-        GeneralOptions();
-        PlayerOptions();
-        GUILayout.Label("Developed by owos02(github.com/owos02)");
-        GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
-    }
+    public class ImmediateModeGUI {
+        private Settings? _settings;
+        private bool isGUIactive;
+        private static Rect window = new Rect(50, 50, 300, 600);
 
-    #region Control Elements
-
-    void ButtonToggle(string ButtonName, ConfigEntry<bool> toggle) {
-        GUILayout.BeginHorizontal();
-        if (GUILayout.Button(ButtonName)) {
-            toggle.Value = !toggle.Value;
-            _settings.SaveConfig();
+        internal bool active {
+            get => isGUIactive;
+            set => isGUIactive = value;
         }
 
-        var originalColor = GUI.color;
-        if (toggle.Value)
-            GUI.color = Color.green;
-        else
-            GUI.color = Color.red;
-        GUILayout.Label(toggle.Value ? "Active" : "Inactive");
-        GUI.color = originalColor;
-        GUILayout.EndHorizontal();
-    }
+        internal ImmediateModeGUI() {
+            isGUIactive = false;
+        }
 
-    #endregion
+        internal void Run(ref Settings s) {
+            _settings ??= s;
+            if (!isGUIactive && !s.configAlwaysShowModBox.Value) return;
+            window = GUILayout.Window(0, window, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
+        }
+
+        private bool foldGeneral = false;
+
+        private void GeneralOptions() {
+            foldGeneral = GUILayout.Toggle(foldGeneral, "General Settings", "button");
+            if (!foldGeneral) return;
+            ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
+            ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
+        }
+
+        private bool foldPlayer = false;
+
+        private void PlayerOptions() {
+            foldPlayer = GUILayout.Toggle(foldPlayer, "Player Settings", "button");
+            if (!foldPlayer) return;
+            ButtonToggle("Infinite HP", Plugin.settings.configInfiniteHealth);
+            ButtonToggle("Infinite Health Flask", Plugin.settings.configInfiniteHealthFlask);
+            ButtonToggle("Infinite Ammo", Plugin.settings.configInfiniteAmmo);
+        }
+
+        private bool unfoldAll = true;
+        private bool runOnce = true;
+
+        private void MainWindow(int windowID) {
+            if (GUILayout.Button((unfoldAll ? "Show All" : "Close All"), GUILayout.ExpandWidth(false)) || runOnce) {
+                unfoldAll = !unfoldAll;
+                foldGeneral = !unfoldAll;
+                foldPlayer = !unfoldAll;
+                runOnce = false;
+            }
+
+            GeneralOptions();
+            PlayerOptions();
+            GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
+        }
+
+        #region Control Elements
+
+        void ButtonToggle(string ButtonName, ConfigEntry<bool> toggle) {
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button(ButtonName, GUILayout.Width(200f))) {
+                toggle.Value = !toggle.Value;
+                _settings.SaveConfig();
+            }
+
+            var originalColor = GUI.color;
+            if (toggle.Value)
+                GUI.color = PluginColors.green;
+            else
+                GUI.color = PluginColors.red;
+            GUILayout.Label(toggle.Value ? "Active" : "Inactive", new GUILayoutOption(GUILayoutOption.Type.alignEnd, Plugin.imgui));
+            GUI.color = originalColor;
+            GUILayout.EndHorizontal();
+        }
+
+        #endregion
+    }
 }

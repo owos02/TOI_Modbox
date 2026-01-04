@@ -5,14 +5,23 @@ using BepInEx.Configuration;
 namespace com.owos02.toi_modbox {
     internal class Settings {
         private static readonly string FilePath = Paths.ConfigPath + '\\' + MyPluginInfo.PLUGIN_GUID + ".cfg";
-
         private static ConfigFile _config;
+
+        #region General
 
         internal ConfigEntry<bool> configShowModBox;
         internal ConfigEntry<bool> configAlwaysShowModBox;
         internal ConfigEntry<bool> configSplashScreenSkip;
+
+        #endregion
+
+        #region Player
+
         internal ConfigEntry<bool> configInfiniteHealthFlask;
         internal ConfigEntry<bool> configInfiniteHealth;
+        internal ConfigEntry<bool> configInfiniteAmmo;
+
+        #endregion
 
         internal Settings() {
             var saveOnInit = false;
@@ -37,13 +46,23 @@ namespace com.owos02.toi_modbox {
             General,
             Player
         }
-        
+
         private void BindEntries() {
+            #region General
+
             configShowModBox = _config.Bind(new ConfigDefinition(nameof(Categories.General), "ShowModBoxGui"), false, new ConfigDescription("Only for state saving"));
             configAlwaysShowModBox = _config.Bind(new ConfigDefinition(nameof(Categories.General), "AlwaysShowModBox"), false);
             configSplashScreenSkip = _config.Bind(new ConfigDefinition(nameof(Categories.General), "SkipSplashScreen"), true, new ConfigDescription("If enabled, skips to the controller screen"));
+
+            #endregion
+
+            #region Player
+
             configInfiniteHealth = _config.Bind(new ConfigDefinition(nameof(Categories.Player), "InfiniteHealth"), false);
-            configInfiniteHealthFlask = _config.Bind(new ConfigDefinition(nameof(Categories.Player), "InfiniteHealthFlask"), false, new ConfigDescription("Inverts the health flask drain"));
+            configInfiniteHealthFlask = _config.Bind(new ConfigDefinition(nameof(Categories.Player), "InfiniteHealthFlask"), false, new ConfigDescription("Sets the flask drain to 0"));
+            configInfiniteAmmo = _config.Bind(new ConfigDefinition(nameof(Categories.Player), "InfiniteAmmo"), false);
+
+            #endregion
         }
     }
 }

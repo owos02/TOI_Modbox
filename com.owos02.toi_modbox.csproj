@@ -16,6 +16,11 @@
     <Title>Tails of Iron Modbox</Title>
     <Authors>owos02</Authors>
     <Description>A BepInEx plugin for the game Tails of Iron</Description>
+    <Copyright>2026 owos02</Copyright>
+    <PackageProjectUrl>https://github.com/owos02/TOI_Modbox</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/owos02/TOI_Modbox/blob/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/owos02/TOI_Modbox</RepositoryUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <ItemGroup>
