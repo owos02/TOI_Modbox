@@ -1,6 +1,8 @@
-namespace com.owos02.toi_modbox;
-
+using System;
+using System.Linq;
 using HarmonyLib;
+
+namespace com.owos02.toi_modbox;
 
 internal partial class TOI_Patches {
     [HarmonyPatch(typeof(Player), "DealerDamage")]
@@ -17,12 +19,18 @@ internal partial class TOI_Patches {
         value = 0;
     }
 
-    private const int RangedWeaponPlayerEnum = 0;
-
     [HarmonyPatch(typeof(RangedWeapon), "DecrementAmmo")]
     [HarmonyPrefix]
     public static bool Patch_InfiniteAmmo(RangedWeapon __instance) {
         if (!Plugin.settings.configInfiniteAmmo.Value) return true;
-        return Traverse.Create(__instance).Field("m_OwnerCharacterType").GetValue<int>() != RangedWeaponPlayerEnum;
+        var playerEnum = Traverse.Create(__instance).Field("m_OwnerCharacterType").GetValueType();
+        var enumList = Enum.GetNames(playerEnum);
+        if (!enumList.Contains("Player")) {
+            Plugin.Logger.LogError($"Patch InfiniteAmmo: OwnerCharacterType contains {{{enumList.Join()}}} but has no \"Player\" Enum!");
+            return true;
+        }
+
+        var targetedValue = Enum.Parse(playerEnum, "Player");
+        return!Traverse.Create(__instance).Field("m_OwnerCharacterType").GetValue<object>().Equals(targetedValue);
     }
 }
