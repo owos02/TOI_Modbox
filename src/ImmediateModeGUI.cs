@@ -46,6 +46,7 @@ public class ImmediateModeGUI {
         if (!foldGeneral) return;
         ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
         ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
+        CurrenciesInput();
     }
 
     private void PlayerOptions() {
@@ -66,6 +67,8 @@ public class ImmediateModeGUI {
 
         GeneralOptions();
         PlayerOptions();
+        GUILayout.FlexibleSpace();
+        GUILayout.Label("Developed by owos02");
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
     }
 
@@ -83,9 +86,47 @@ public class ImmediateModeGUI {
             GUI.color = PluginColors.green;
         else
             GUI.color = PluginColors.red;
-        GUILayout.Label(toggle.Value ? "Active" : "Inactive", new GUILayoutOption(GUILayoutOption.Type.alignEnd, Plugin.imgui));
+        GUILayout.Label(toggle.Value ? "Active" : "Inactive");
         GUI.color = originalColor;
         GUILayout.EndHorizontal();
+    }
+
+    private void CurrenciesInput() {
+        GUI.skin.textField.alignment = TextAnchor.MiddleCenter;
+        GUILayout.Label("Currencies");
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+        NumberInput("Gold", Settings.dataGold);
+        StepwiseButton('+', (_) => Settings.incrementCoin = 1);
+        StepwiseButton('-', (_) => Settings.incrementCoin = -1);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        NumberInput("Iron", Settings.dataIron);
+        StepwiseButton('+', (_) => Settings.incrementIron = 1);
+        StepwiseButton('-', (_) => Settings.incrementIron = -1);
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+        NumberInput("Monster Parts", Settings.dataMonsterParts);
+        StepwiseButton('+', (_) => Settings.incrementMonster = 1);
+        StepwiseButton('-', (_) => Settings.incrementMonster = -1);
+        GUILayout.EndHorizontal();
+        GUI.skin.textField.alignment = default;
+        GUILayout.EndVertical();
+    }
+
+    private void NumberInput(string label, string data) {
+        GUILayout.BeginHorizontal();
+        data = GUILayout.TextField(data, GUILayout.MaxWidth(40f));
+        GUILayout.Label(label);
+        GUILayout.EndHorizontal();
+    }
+
+    internal delegate void Method(params object[ ] args);
+
+    private void StepwiseButton(char symbol, Method onClick, params object[ ] onClickArgs) {
+        if (GUILayout.Button(symbol.ToString(), GUILayout.MaxWidth(20f))) {
+            onClick.Invoke(onClickArgs);
+        }
     }
 
     #endregion

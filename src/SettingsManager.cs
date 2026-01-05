@@ -21,6 +21,17 @@ namespace com.owos02.toi_modbox {
         internal ConfigEntry<bool> configInfiniteHealth;
         internal ConfigEntry<bool> configInfiniteAmmo;
 
+        #region Unsaved Player Variables
+
+        internal static int incrementCoin;
+        internal static int incrementIron;
+        internal static int incrementMonster;
+        internal static string dataGold = "";
+        internal static string dataIron = "";
+        internal static string dataMonsterParts = "";
+
+        #endregion
+
         #endregion
 
         internal Settings() {

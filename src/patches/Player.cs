@@ -33,4 +33,19 @@ internal partial class TOI_Patches {
         var targetedValue = Enum.Parse(playerEnum, "Player");
         return!Traverse.Create(__instance).Field("m_OwnerCharacterType").GetValue<object>().Equals(targetedValue);
     }
+
+    [HarmonyPatch(typeof(Player), "ManagedUpdate")]
+    [HarmonyPrefix]
+    public static void Patch_SetCurrency(Player __instance) {
+        Settings.dataGold = __instance.m_Inventory.m_CoinCurrency.ToString();
+        Settings.dataIron = __instance.m_Inventory.m_IronCurrency.ToString();
+        Settings.dataMonsterParts = __instance.m_Inventory.m_MonsterCurrency.ToString();
+        if (Settings.incrementCoin == 0 && Settings.incrementIron == 0 && Settings.incrementMonster == 0) return;
+        __instance.m_Inventory.m_CoinCurrency += Settings.incrementCoin;
+        __instance.m_Inventory.m_IronCurrency += Settings.incrementIron;
+        __instance.m_Inventory.m_MonsterCurrency += Settings.incrementMonster;
+        Settings.incrementCoin = 0;
+        Settings.incrementIron = 0;
+        Settings.incrementMonster = 0;
+    }
 }
