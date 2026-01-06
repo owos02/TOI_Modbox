@@ -21,6 +21,6 @@ internal partial class TOI_Patches {
     [HarmonyPatch(typeof(SaveDataManager), "OnSaveFileLoadComplete")]
     [HarmonyPostfix]
     public static void Patch_GetSaveSlotData(object __instance) {
-        Settings.saveFile = (int)typeof(SaveDataManager).GetMethod("GetProfileSlot").Invoke(__instance, null);
+        Settings.saveFile = (int)typeof(SaveDataManager).GetMethod("GetProfileSlot")!.Invoke(__instance, null)!;
     }
 }
