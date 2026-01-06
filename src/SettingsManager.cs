@@ -13,6 +13,13 @@ namespace com.owos02.toi_modbox {
         internal ConfigEntry<bool> configAlwaysShowModBox;
         internal ConfigEntry<bool> configSplashScreenSkip;
 
+        #region Unsaved General Variables
+
+        internal const int NO_SAVE_FILE_SELECTED = 5;
+        internal static int saveFile = NO_SAVE_FILE_SELECTED;
+
+        #endregion
+
         #endregion
 
         #region Player

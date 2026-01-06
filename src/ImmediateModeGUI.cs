@@ -58,6 +58,7 @@ public class ImmediateModeGUI {
     }
 
     private void MainWindow(int windowID) {
+        GUILayout.BeginHorizontal();
         if (GUILayout.Button(unfoldAll ? "Show All" : "Close All", GUILayout.ExpandWidth(false)) || runOnce) {
             unfoldAll = !unfoldAll;
             foldGeneral = !unfoldAll;
@@ -65,6 +66,10 @@ public class ImmediateModeGUI {
             runOnce = false;
         }
 
+        GUI.skin.label.alignment = TextAnchor.MiddleRight;
+        if (Settings.saveFile != 5) GUILayout.Label($"Save File: {Settings.saveFile + 1}");
+        GUI.skin.label.alignment = default;
+        GUILayout.EndHorizontal();
         GeneralOptions();
         PlayerOptions();
         GUILayout.FlexibleSpace();

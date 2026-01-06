@@ -11,9 +11,16 @@ internal partial class TOI_Patches {
 
     [HarmonyPatch(typeof(Player), "ManagedOnDestroy")]
     [HarmonyPrefix]
-    public static void Patch_UnloadCurrenciesFromGUI(Player __instance) {
+    public static void Patch_UnloadSaveDataFromGUI(Player __instance) {
         Settings.dataGold = null;
         Settings.dataIron = null;
         Settings.dataMonsterParts = null;
+        Settings.saveFile = Settings.NO_SAVE_FILE_SELECTED;
+    }
+
+    [HarmonyPatch(typeof(SaveDataManager), "OnSaveFileLoadComplete")]
+    [HarmonyPostfix]
+    public static void Patch_GetSaveSlotData(object __instance) {
+        Settings.saveFile = (int)typeof(SaveDataManager).GetMethod("GetProfileSlot").Invoke(__instance, null);
     }
 }
