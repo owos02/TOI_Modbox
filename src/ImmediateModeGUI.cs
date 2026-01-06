@@ -41,22 +41,6 @@ public class ImmediateModeGUI {
         window = GUILayout.Window(0, window, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
     }
 
-    private void GeneralOptions() {
-        foldGeneral = GUILayout.Toggle(foldGeneral, "General Settings", "button");
-        if (!foldGeneral) return;
-        ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
-        ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
-        CurrenciesInput();
-    }
-
-    private void PlayerOptions() {
-        foldPlayer = GUILayout.Toggle(foldPlayer, "Player Settings", "button");
-        if (!foldPlayer) return;
-        ButtonToggle("Infinite HP", Plugin.settings.configInfiniteHealth);
-        ButtonToggle("Infinite Health Flask", Plugin.settings.configInfiniteHealthFlask);
-        ButtonToggle("Infinite Ammo", Plugin.settings.configInfiniteAmmo);
-    }
-
     private void MainWindow(int windowID) {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button(unfoldAll ? "Show All" : "Close All", GUILayout.ExpandWidth(false)) || runOnce) {
@@ -76,6 +60,26 @@ public class ImmediateModeGUI {
         GUILayout.Label("Developed by owos02");
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
     }
+
+    #region Options Pages
+
+    private void GeneralOptions() {
+        foldGeneral = GUILayout.Toggle(foldGeneral, "General Settings", "button");
+        if (!foldGeneral) return;
+        ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
+        ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
+    }
+
+    private void PlayerOptions() {
+        foldPlayer = GUILayout.Toggle(foldPlayer, "Player Settings", "button");
+        if (!foldPlayer) return;
+        ButtonToggle("Infinite HP", Plugin.settings.configInfiniteHealth);
+        ButtonToggle("Infinite Health Flask", Plugin.settings.configInfiniteHealthFlask);
+        ButtonToggle("Infinite Ammo", Plugin.settings.configInfiniteAmmo);
+        CurrenciesInput();
+    }
+
+    #endregion
 
     #region Control Elements
 
