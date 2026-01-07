@@ -22,7 +22,7 @@ internal static class PluginColors {
 }
 
 public class ImmediateModeGUI {
-    private static Rect window = new(50, 50, 300, 600);
+    private static Rect window = new(50, 150, 300, 600);
     private Settings? _settings;
     private bool foldGeneral;
     private bool foldPlayer;
