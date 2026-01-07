@@ -1,17 +1,17 @@
 #! /bin/bash
 clear
 
-echo_default_color='\033[0m'
-echo_error_color='\033[0;31m'
-echo_success_color='\033[0;92m'
-echo_note_color='\033[0;37m'
-echo_info_color='\033[0;33m'
-echo_file_highlight_color='\033[1;4;97m'
+readonly echo_default_color='\033[0m'
+readonly echo_error_color='\033[0;31m'
+readonly echo_success_color='\033[0;92m'
+readonly echo_note_color='\033[0;37m'
+readonly echo_info_color='\033[0;33m'
+readonly echo_file_highlight_color='\033[1;4;97m'
 
 echo -e -n "${echo_note_color}Executed script in correct directory? "
-WORKING_DIRECTORY=$(pwd)
-CURRENT_FOLDER=$(basename "$WORKING_DIRECTORY" )
-DEVELOPER_DIRECTORY_NAME="TOI_Modbox"
+readonly WORKING_DIRECTORY=$(pwd)
+readonly CURRENT_FOLDER=$(basename "$WORKING_DIRECTORY" )
+readonly DEVELOPER_DIRECTORY_NAME="TOI_Modbox"
 
 # Check if script is running in root
 if [ "$CURRENT_FOLDER" != "$DEVELOPER_DIRECTORY_NAME" ]; then
