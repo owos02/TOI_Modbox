@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+
 namespace com.owos02.toi_modbox;
 
 using GearType = ItemData.GearType;
@@ -12,18 +13,18 @@ using THWeapon = ItemData.TwohandedMeleeWeapons;
 using RangedWeapons = ItemData.RangedWeapons;
 using Shields = ItemData.Shields;
 using Helmets = ItemData.Helmets;
-using Armour = ItemData.Armour;
+using Armours = ItemData.Armour;
 
 internal partial class TOI_Patches {
-    private static IEnumerable<GearType> gearTypes; 
-    private static IEnumerable<KeyItems> keyItems; 
-    private static IEnumerable<OHWeapon> weapons1H; 
-    private static IEnumerable<THWeapon> weapons2H; 
-    private static IEnumerable<RangedWeapons> weaponsRanged; 
-    private static IEnumerable<Shields> shields; 
-    private static IEnumerable<Helmets> helmets; 
-    private static IEnumerable<Armour> armours; 
-    
+    internal static IEnumerable<KeyItems> keyItems;
+    internal static IEnumerable<GearType> gearTypes;
+    internal static IEnumerable<OHWeapon> weapons1H;
+    internal static IEnumerable<THWeapon> weapons2H;
+    internal static IEnumerable<RangedWeapons> weaponsRanged;
+    internal static IEnumerable<Shields> shields;
+    internal static IEnumerable<Helmets> helmets;
+    internal static IEnumerable<Armours> armours;
+
     [HarmonyPatch(typeof(ItemData), "ManagedAwake")]
     [HarmonyPrefix]
     public static void Patch_Experimental_PopulateData(ItemData __instance) {
@@ -38,46 +39,42 @@ internal partial class TOI_Patches {
         weaponsRanged = Enum.GetValues(typeof(RangedWeapons)).Cast<RangedWeapons>();
         shields = Enum.GetValues(typeof(Shields)).Cast<Shields>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
         helmets = Enum.GetValues(typeof(Helmets)).Cast<Helmets>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
-        armours = Enum.GetValues(typeof(Armour)).Cast<Armour>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
-        
-        foreach (var d in gearTypes) {
-            Plugin.Logger.LogInfo($"Gear: {d}");
-        }
-        
-        foreach (var d in keyItems) {
-            Plugin.Logger.LogInfo($"Key: {d}");
-        }
-        
-        foreach (var d in weapons1H) {
-            Plugin.Logger.LogInfo($"1H: {d}");
-        }
-        
-        foreach (var d in weapons2H) {
-            Plugin.Logger.LogInfo($"2H: {d}");
-        }
-        
-        foreach (var d in weaponsRanged) {
-            Plugin.Logger.LogInfo($"Ranged Weapon: {d}");
-        }
-        
-        foreach (var d in shields) {
-            Plugin.Logger.LogInfo($"Shields: {d}");
-        }
-        
-        foreach (var d in helmets) {
-            Plugin.Logger.LogInfo($"Helmets: {d}");
-        }
-        
-        foreach (var d in armours) {
-            Plugin.Logger.LogInfo($"Armour: {d}");
-        }
+        armours = Enum.GetValues(typeof(Armours)).Cast<Armours>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
+        Plugin.imgui.allItems = [keyItems.Select((x) => x.ToString()).ToArray(), weapons1H.Select((x) => x.ToString()).ToArray(), weapons2H.Select((x) => x.ToString()).ToArray(), weaponsRanged.Select((x) => x.ToString()).ToArray(), shields.Select((x) => x.ToString()).ToArray(), helmets.Select((x) => x.ToString()).ToArray(), armours.Select((x) => x.ToString()).ToArray()];
+        Plugin.imgui.namesAreLoaded = true;
     }
 
-    
-    [HarmonyPatch(typeof(Player), "ManagedOnEnable")]
+    [HarmonyPatch(typeof(Player), "ManagedFixedUpdate")]
     [HarmonyPostfix]
     public static void Patch_ExperimentalRecieveItem(Player __instance) {
-        Plugin.Logger.LogInfo("Equipping Item now");
-        __instance.m_PlayerInventoryAsset.Equip(OHWeapon.PurpleHeroSword);
+        if (!Plugin.imgui.addItemEvent) return;
+        Plugin.imgui.addItemEvent = false;
+        var category = (ImmediateModeGUI.SelectedCategory)Plugin.imgui.selectedCategory;
+        if (category == ImmediateModeGUI.SelectedCategory.KeyItem) { }
+        else {
+            int index = Plugin.imgui.selectedItem;
+            switch (category) {
+                case ImmediateModeGUI.SelectedCategory.Weapon1H:
+                    __instance.m_PlayerInventoryAsset.Equip(weapons1H.ElementAt(index));
+                    break;
+                case ImmediateModeGUI.SelectedCategory.Weapon2H:
+                    __instance.m_PlayerInventoryAsset.Equip(weapons2H.ElementAt(index));
+                    break;
+                case ImmediateModeGUI.SelectedCategory.WeaponRanged:
+                    __instance.m_PlayerInventoryAsset.Equip(weaponsRanged.ElementAt(index));
+                    break;
+                case ImmediateModeGUI.SelectedCategory.Shield:
+                    __instance.m_PlayerInventoryAsset.Equip(shields.ElementAt(index));
+                    break;
+                case ImmediateModeGUI.SelectedCategory.Helmet:
+                    __instance.m_PlayerInventoryAsset.Equip(helmets.ElementAt(index));
+                    break;
+                case ImmediateModeGUI.SelectedCategory.Armour:
+                    __instance.m_PlayerInventoryAsset.Equip(armours.ElementAt(index));
+                    break;
+                default:
+                    return;
+            }
+        }
     }
 }
