@@ -20,7 +20,7 @@ internal static class PluginColors {
         return strength / 255f;
     }
 }
-
+#nullable enable
 public class ImmediateModeGUI {
     private static Rect window = new(50, 150, 300, 600);
     private Settings? _settings;
@@ -87,7 +87,7 @@ public class ImmediateModeGUI {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button(ButtonName, GUILayout.Width(200f))) {
             toggle.Value = !toggle.Value;
-            _settings.SaveConfig();
+            _settings!.SaveConfig();
         }
 
         var originalColor = GUI.color;
