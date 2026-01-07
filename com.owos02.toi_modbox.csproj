@@ -54,8 +54,4 @@
       <Private>false</Private>
     </Reference>
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="lib\" />
-  </ItemGroup>
 </Project>
