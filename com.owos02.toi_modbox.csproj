@@ -21,6 +21,7 @@
     <PackageLicenseUrl>https://github.com/owos02/TOI_Modbox/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/owos02/TOI_Modbox</RepositoryUrl>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
