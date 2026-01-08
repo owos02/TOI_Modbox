@@ -70,7 +70,7 @@ public class ImmediateModeGUI {
     }
 
     /// <summary>
-    /// Changing the order of the categories will change the display order of buttons in the UI.
+    /// Changing the order of the categories inside the enum will change the display order of buttons in the UI.
     /// </summary>
     internal enum ItemCategory : int {
         Weapon1H,
