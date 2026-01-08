@@ -9,6 +9,7 @@ internal static class PluginColors {
     internal static Color red = new(f(237), f(135), f(150));
     internal static Color importantInfoRed = new(f(210), f(15), f(57));
     internal static Color green = new(f(166), f(218), f(149));
+    internal static Color linkBlue = new(f(140), f(170), f(238));
 
     /// <summary>
     ///     To Float
@@ -65,7 +66,14 @@ public class ImmediateModeGUI {
         GeneralOptions();
         PlayerOptions();
         GUILayout.FlexibleSpace();
+        GUILayout.BeginHorizontal();
         GUILayout.Label("Developed by owos02");
+        GUI.color = PluginColors.linkBlue;
+        GUI.skin.label.alignment = TextAnchor.MiddleRight;
+        if (GUILayout.Button("See Project", "label")) System.Diagnostics.Process.Start("https://github.com/owos02/TOI_Modbox");
+        GUILayout.EndHorizontal();
+        GUI.color = default;
+        GUI.skin.label.alignment = default;
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
     }
 
