@@ -23,7 +23,7 @@ internal partial class TOIPatches {
     // ReSharper disable once InconsistentNaming
     [HarmonyPatch(typeof(SaveDataManager), "OnSaveFileLoadComplete")]
     [HarmonyPostfix]
-    public static void Patch_GetSaveSlotData(object __instance) {
-        Settings.saveFile = (int)typeof(SaveDataManager).GetMethod("GetProfileSlot")!.Invoke(__instance, null)!;
+    public static void Patch_GetSaveSlotData(SaveDataManager __instance) {
+        Settings.saveFile = __instance.GetProfileSlot();
     }
 }
