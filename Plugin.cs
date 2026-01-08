@@ -3,14 +3,13 @@ using BepInEx.Logging;
 using HarmonyLib;
 
 namespace com.owos02.toi_modbox;
-
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin {
     internal static new ManualLogSource Logger;
     internal static Harmony _harmony = new Harmony("TOI_Modbox");
     internal static Settings settings;
     internal static ImmediateModeGUI imgui = new ImmediateModeGUI();
-
+    internal static EquipGearEvent? itemEquipGearEvent;
     private void OnGUI() {
         imgui.Run(ref settings);
     }
@@ -18,6 +17,7 @@ public class Plugin : BaseUnityPlugin {
     private void Awake() {
         // Plugin startup logic
         Logger = base.Logger;
+        itemEquipGearEvent = gameObject.AddComponent<EquipGearEvent>();
 #if DEBUG
         Logger.LogInfo($"Loading {MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION}");
         Logger.LogWarning($"You are running the debug version of the Plugin!");
@@ -27,7 +27,7 @@ public class Plugin : BaseUnityPlugin {
 #endif
 // ###
         settings = new Settings();
-        _harmony.PatchAll(typeof(TOI_Patches));
+        _harmony.PatchAll(typeof(TOIPatches));
 // ###
 #if DEBUG
             Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
@@ -42,10 +42,10 @@ public class Plugin : BaseUnityPlugin {
 /// This class is the container for all patches, and is being patched into the game.
 /// Patches reside in the src/patches folder.
 /// </summary>
-internal partial class TOI_Patches {
+internal partial class TOIPatches {
     [HarmonyPatch(typeof(RedgiOptionsController), "ChangeMenuState")]
     [HarmonyPrefix]
     public static void GuiToggler(RedgiOptionsController.Menu menu) {
-        Plugin.imgui.active = (menu == RedgiOptionsController.Menu.Settings);
+        Plugin.imgui.Active = (menu == RedgiOptionsController.Menu.Settings);
     }
 }

@@ -4,7 +4,7 @@ using HarmonyLib;
 
 namespace com.owos02.toi_modbox;
 
-internal partial class TOI_Patches {
+internal partial class TOIPatches {
     [HarmonyPatch(typeof(Player), "CharacterDamage")]
     [HarmonyPrefix]
     public static void Patch_InfiniteHealth(ref float Damage) {

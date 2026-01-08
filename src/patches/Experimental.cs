@@ -15,23 +15,26 @@ using Shields = ItemData.Shields;
 using Helmets = ItemData.Helmets;
 using Armours = ItemData.Armour;
 
-internal partial class TOI_Patches {
-    internal static IEnumerable<KeyItems> keyItems;
-    internal static IEnumerable<GearType> gearTypes;
-    internal static IEnumerable<OHWeapon> weapons1H;
-    internal static IEnumerable<THWeapon> weapons2H;
-    internal static IEnumerable<RangedWeapons> weaponsRanged;
-    internal static IEnumerable<Shields> shields;
-    internal static IEnumerable<Helmets> helmets;
-    internal static IEnumerable<Armours> armours;
+internal partial class TOIPatches {
+    private static IEnumerable<KeyItems>? keyItems;
+    private static IEnumerable<GearType>? gearTypes;
+    private static IEnumerable<OHWeapon>? weapons1H;
+    private static IEnumerable<THWeapon>? weapons2H;
+    private static IEnumerable<RangedWeapons>? weaponsRanged;
+    private static IEnumerable<Shields>? shields;
+    private static IEnumerable<Helmets>? helmets;
+    private static IEnumerable<Armours>? armours;
+    private static string[ ] CreateList<T>(IEnumerable<T> list) => list.Select(x => x!.ToString()).ToArray();
 
+    // ReSharper disable once InconsistentNaming
     [HarmonyPatch(typeof(ItemData), "ManagedAwake")]
     [HarmonyPrefix]
     public static void Patch_Experimental_PopulateData(ItemData __instance) {
 #if RELEASE
         return
 #endif
-        var dlcPattern = ".*DLC.*";
+        if (Plugin.imgui.AllItems != null) return;
+        const string dlcPattern = ".*DLC.*";
         gearTypes = Enum.GetValues(typeof(GearType)).Cast<GearType>();
         keyItems = Enum.GetValues(typeof(KeyItems)).Cast<KeyItems>();
         weapons1H = Enum.GetValues(typeof(OHWeapon)).Cast<OHWeapon>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
@@ -40,41 +43,53 @@ internal partial class TOI_Patches {
         shields = Enum.GetValues(typeof(Shields)).Cast<Shields>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
         helmets = Enum.GetValues(typeof(Helmets)).Cast<Helmets>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
         armours = Enum.GetValues(typeof(Armours)).Cast<Armours>().Where((item) => !Regex.IsMatch(item.ToString(), dlcPattern));
-        Plugin.imgui.allItems = [keyItems.Select((x) => x.ToString()).ToArray(), weapons1H.Select((x) => x.ToString()).ToArray(), weapons2H.Select((x) => x.ToString()).ToArray(), weaponsRanged.Select((x) => x.ToString()).ToArray(), shields.Select((x) => x.ToString()).ToArray(), helmets.Select((x) => x.ToString()).ToArray(), armours.Select((x) => x.ToString()).ToArray()];
-        Plugin.imgui.namesAreLoaded = true;
+        Plugin.imgui.AllItems = new Dictionary<string, string[ ]> {
+            {nameof(ImmediateModeGUI.ItemCategory.Weapon1H), CreateList(weapons1H)},
+            {nameof(ImmediateModeGUI.ItemCategory.Weapon2H), CreateList(weapons2H)},
+            {nameof(ImmediateModeGUI.ItemCategory.WeaponRanged), CreateList(weaponsRanged)},
+            {nameof(ImmediateModeGUI.ItemCategory.Shield), CreateList(shields)},
+            {nameof(ImmediateModeGUI.ItemCategory.Helmet), CreateList(helmets)},
+            {nameof(ImmediateModeGUI.ItemCategory.Armour), CreateList(armours)},
+            {nameof(ImmediateModeGUI.ItemCategory.KeyItem), CreateList(keyItems)}
+        };
+        Plugin.imgui.NamesAreLoaded = true;
     }
 
+    // ReSharper disable once InconsistentNaming
     [HarmonyPatch(typeof(Player), "ManagedFixedUpdate")]
     [HarmonyPostfix]
-    public static void Patch_ExperimentalRecieveItem(Player __instance) {
-        if (!Plugin.imgui.addItemEvent) return;
-        Plugin.imgui.addItemEvent = false;
-        var category = (ImmediateModeGUI.SelectedCategory)Plugin.imgui.selectedCategory;
-        if (category == ImmediateModeGUI.SelectedCategory.KeyItem) { }
+    public static void Patch_ExperimentalReceiveItem(Player __instance) {
+        if (!Plugin.imgui.AddItemEvent) return;
+        
+        Plugin.imgui.AddItemEvent = false;
+        var category = (ImmediateModeGUI.ItemCategory)Plugin.imgui.SelectedCategory;
+        if (category == ImmediateModeGUI.ItemCategory.KeyItem) { }
         else {
-            int index = Plugin.imgui.selectedItem;
-            switch (category) {
-                case ImmediateModeGUI.SelectedCategory.Weapon1H:
-                    __instance.m_PlayerInventoryAsset.Equip(weapons1H.ElementAt(index));
-                    break;
-                case ImmediateModeGUI.SelectedCategory.Weapon2H:
-                    __instance.m_PlayerInventoryAsset.Equip(weapons2H.ElementAt(index));
-                    break;
-                case ImmediateModeGUI.SelectedCategory.WeaponRanged:
-                    __instance.m_PlayerInventoryAsset.Equip(weaponsRanged.ElementAt(index));
-                    break;
-                case ImmediateModeGUI.SelectedCategory.Shield:
-                    __instance.m_PlayerInventoryAsset.Equip(shields.ElementAt(index));
-                    break;
-                case ImmediateModeGUI.SelectedCategory.Helmet:
-                    __instance.m_PlayerInventoryAsset.Equip(helmets.ElementAt(index));
-                    break;
-                case ImmediateModeGUI.SelectedCategory.Armour:
-                    __instance.m_PlayerInventoryAsset.Equip(armours.ElementAt(index));
-                    break;
-                default:
-                    return;
-            }
+            var index = Plugin.imgui.SelectedItem;
+            Plugin.itemEquipGearEvent!.m_GearType = GetGearType(category);
+            Plugin.itemEquipGearEvent.m_OneHandedMeleeWeapon = (OHWeapon)index;
+            Plugin.itemEquipGearEvent.m_TwoHandedMeleeWeapon = (THWeapon)index;
+            Plugin.itemEquipGearEvent.m_RangedWeapon = (RangedWeapons)index;
+            Plugin.itemEquipGearEvent.m_Helmet = (Helmets)index;
+            Plugin.itemEquipGearEvent.m_Armour = (Armours)index;
+            Plugin.itemEquipGearEvent.m_Shield = (Shields)index;
+            __instance.m_PlayerInventoryAsset.Equip(Plugin.itemEquipGearEvent);
         }
     }
+
+    #region HelperFunctions
+
+    private static GearType GetGearType(ImmediateModeGUI.ItemCategory toConvert) {
+        return toConvert switch {
+            ImmediateModeGUI.ItemCategory.Weapon1H => GearType.OneHandedMeleeWeapon,
+            ImmediateModeGUI.ItemCategory.Weapon2H => GearType.TwoHandedMeleeWeapon,
+            ImmediateModeGUI.ItemCategory.WeaponRanged => GearType.RangedWeapon,
+            ImmediateModeGUI.ItemCategory.Helmet => GearType.Helmet,
+            ImmediateModeGUI.ItemCategory.Armour => GearType.Armour,
+            ImmediateModeGUI.ItemCategory.Shield => GearType.Shield,
+            _ => throw new Exception("KeyItems is not in Enum 'GearType'")
+        };
+    }
+    #endregion
+    
 }

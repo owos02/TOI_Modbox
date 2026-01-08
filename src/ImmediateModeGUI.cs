@@ -1,5 +1,5 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using BepInEx.Configuration;
 using UnityEngine;
 
@@ -28,32 +28,34 @@ public class ImmediateModeGUI {
     private static Rect mainWindow = new(Screen.width - 50 - 300, 150, 300, 600);
     private static Rect itemsWindow = new(Screen.width - 900 - 300, 150, 850, 600);
     private Settings? _settings;
-    private bool foldGeneral;
-    private bool foldPlayer;
-    private bool runOnce = true;
-    private bool unfoldAll = true;
+    private bool _foldGeneral;
+    private bool _foldPlayer;
+    private bool _runOnce = true;
+    private bool _unfoldAll = true;
 
     internal ImmediateModeGUI() {
-        active = false;
+        Active = false;
     }
 
-    internal bool active { get; set; }
-    private bool isItemsWindowOpen = false;
+    internal bool Active { get; set; }
+    private bool _isItemsWindowOpen = false;
 
     internal void Run(ref Settings s) {
         _settings ??= s;
-        if (!active && !s.configAlwaysShowModBox.Value) return;
+        if (!Active && !s.configAlwaysShowModBox.Value) return;
+        Cursor.visible = Active | s.configAlwaysShowModBox.Value;
+        Cursor.lockState = CursorLockMode.None;
         mainWindow = GUILayout.Window(0, mainWindow, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
-        if (isItemsWindowOpen) itemsWindow = GUILayout.Window(1, itemsWindow, ItemsWindow, $"Items");
+        if (_isItemsWindowOpen) itemsWindow = GUILayout.Window(1, itemsWindow, ItemsWindow, $"Items");
     }
 
     private void MainWindow(int windowID) {
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button(unfoldAll ? "Show All" : "Close All", GUILayout.ExpandWidth(false)) || runOnce) {
-            unfoldAll = !unfoldAll;
-            foldGeneral = !unfoldAll;
-            foldPlayer = !unfoldAll;
-            runOnce = false;
+        if (GUILayout.Button(_unfoldAll ? "Show All" : "Close All", GUILayout.ExpandWidth(false)) || _runOnce) {
+            _unfoldAll = !_unfoldAll;
+            _foldGeneral = !_unfoldAll;
+            _foldPlayer = !_unfoldAll;
+            _runOnce = false;
         }
 
         GUI.skin.label.alignment = TextAnchor.MiddleRight;
@@ -67,31 +69,34 @@ public class ImmediateModeGUI {
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
     }
 
-    internal enum SelectedCategory : int {
-        KeyItem,
+    /// <summary>
+    /// Changing the order of the categories will change the display order of buttons in the UI.
+    /// </summary>
+    internal enum ItemCategory : int {
         Weapon1H,
-        Weapon2H,
-        WeaponRanged,
-        Shield,
         Helmet,
-        Armour
+        WeaponRanged,
+        KeyItem,
+        Weapon2H,
+        Armour,
+        Shield,
     }
 
-    internal int selectedCategory = 1;
-    internal int selectedItem = 0;
-    internal string[ ][ ] allItems;
-    internal string[ ] categoryNames = Enum.GetValues(typeof(SelectedCategory)).Cast<SelectedCategory>().Select((category) => category.ToString()).ToArray();
-    internal bool namesAreLoaded = false;
-    internal int previousSelected = 1;
-    internal bool addItemEvent = false;
+    private const int StartCategory = (int)ItemCategory.Weapon1H;
+    internal int SelectedCategory = StartCategory;
+    internal int PreviousSelected = StartCategory;
+    internal int SelectedItem;
+    internal Dictionary<string, string[ ]>? AllItems = null;
+    internal bool NamesAreLoaded = false;
+    internal bool AddItemEvent;
 
     private void ItemsWindow(int windowID) {
-        if (namesAreLoaded) {
+        if (NamesAreLoaded) {
             if (Settings.saveFile != Settings.NO_SAVE_FILE_SELECTED) {
                 GUILayout.Label("Category");
-                selectedCategory = GUILayout.SelectionGrid(selectedCategory, categoryNames, 4);
+                SelectedCategory = GUILayout.SelectionGrid(SelectedCategory, Enum.GetNames(typeof(ItemCategory)), 4);
                 GUILayout.Space(10f);
-                if (selectedCategory == (int)SelectedCategory.KeyItem) {
+                if (SelectedCategory == (int)ItemCategory.KeyItem) {
                     GUILayout.FlexibleSpace();
                     GUI.skin.label.alignment = TextAnchor.MiddleCenter;
                     GUI.color = PluginColors.importantInfoRed;
@@ -102,10 +107,10 @@ public class ImmediateModeGUI {
                 }
 
                 GUILayout.Label("Item");
-                selectedItem = GUILayout.SelectionGrid(selectedItem, allItems[selectedCategory], 5);
-                if (selectedCategory != previousSelected) selectedItem = 0;
+                SelectedItem = GUILayout.SelectionGrid(SelectedItem, AllItems![((ItemCategory)SelectedCategory).ToString()], 5);
+                if (SelectedCategory != PreviousSelected) SelectedItem = 0;
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Equip")) addItemEvent = true;
+                if (GUILayout.Button("Equip")) AddItemEvent = true;
                 GUILayout.Space(5f);
             }
             else {
@@ -117,24 +122,24 @@ public class ImmediateModeGUI {
             }
         }
 
-        if (GUILayout.Button("Close")) isItemsWindowOpen = false;
+        if (GUILayout.Button("Close")) _isItemsWindowOpen = false;
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
-        previousSelected = selectedCategory;
+        PreviousSelected = SelectedCategory;
     }
 
     #region Options Pages
 
     private void GeneralOptions() {
-        foldGeneral = GUILayout.Toggle(foldGeneral, "General Settings", "button");
-        if (!foldGeneral) return;
+        _foldGeneral = GUILayout.Toggle(_foldGeneral, "General Settings", "button");
+        if (!_foldGeneral) return;
         ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
         ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
-        ButtonToggleOnly((!isItemsWindowOpen ? "Open" : "Close") + " Item Window", ref isItemsWindowOpen);
+        ButtonToggleOnly((!_isItemsWindowOpen ? "Open" : "Close") + " Item Window", ref _isItemsWindowOpen);
     }
 
     private void PlayerOptions() {
-        foldPlayer = GUILayout.Toggle(foldPlayer, "Player Settings", "button");
-        if (!foldPlayer) return;
+        _foldPlayer = GUILayout.Toggle(_foldPlayer, "Player Settings", "button");
+        if (!_foldPlayer) return;
         ButtonToggle("Infinite HP", Plugin.settings.configInfiniteHealth);
         ButtonToggle("Infinite Health Flask", Plugin.settings.configInfiniteHealthFlask);
         ButtonToggle("Infinite Ammo", Plugin.settings.configInfiniteAmmo);
@@ -145,34 +150,28 @@ public class ImmediateModeGUI {
 
     #region Control Elements
 
-    private void ButtonToggle(string ButtonName, ConfigEntry<bool> toggle) {
+    private void ButtonToggle(string buttonName, ConfigEntry<bool> toggle) {
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button(ButtonName, GUILayout.Width(200f))) {
+        if (GUILayout.Button(buttonName, GUILayout.Width(200f))) {
             toggle.Value = !toggle.Value;
             _settings!.SaveConfig();
         }
 
         var originalColor = GUI.color;
-        if (toggle.Value)
-            GUI.color = PluginColors.green;
-        else
-            GUI.color = PluginColors.red;
+        GUI.color = toggle.Value ? PluginColors.green : PluginColors.red;
         GUILayout.Label(toggle.Value ? "Active" : "Inactive");
         GUI.color = originalColor;
         GUILayout.EndHorizontal();
     }
 
-    private void ButtonToggleOnly(string ButtonName, ref bool toggle) {
-        if (GUILayout.Button(ButtonName, GUILayout.Width(200f))) {
+    private void ButtonToggleOnly(string buttonName, ref bool toggle) {
+        if (GUILayout.Button(buttonName, GUILayout.Width(200f))) {
             toggle = !toggle;
             _settings!.SaveConfig();
         }
 
         var originalColor = GUI.color;
-        if (toggle)
-            GUI.color = PluginColors.green;
-        else
-            GUI.color = PluginColors.red;
+        GUI.color = toggle ? PluginColors.green : PluginColors.red;
         GUI.color = originalColor;
     }
 
@@ -199,16 +198,16 @@ public class ImmediateModeGUI {
         GUILayout.EndVertical();
     }
 
-    private void NumberInput(string label, string data) {
+    private static void NumberInput(string label, string data) {
         GUILayout.BeginHorizontal();
         data = GUILayout.TextField(data, GUILayout.MaxWidth(40f));
         GUILayout.Label(label);
         GUILayout.EndHorizontal();
     }
 
-    internal delegate void Method(params object[ ] args);
+    private delegate void Method(params object[ ] args);
 
-    private void StepwiseButton(char symbol, Method onClick, params object[ ] onClickArgs) {
+    private static void StepwiseButton(char symbol, Method onClick, params object[ ] onClickArgs) {
         if (GUILayout.Button(symbol.ToString(), GUILayout.MaxWidth(20f))) {
             onClick.Invoke(onClickArgs);
         }
