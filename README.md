@@ -31,14 +31,14 @@ A general purpose mod for the game [Tails of Iron (store.steampowered.com)](http
 
 # Features
 
-|                Option | Info                                        |
-|----------------------:|:--------------------------------------------|
-|    Splash Screen Skip | Skips the start-up screen                   |
-|            Currencies | Add or remove Gold, Iron or Monsterparts    |
-|           Infinite HP |                                             |
-| Infinite Health Flask | Disable flask consumtion                    |
-|         Infinite Ammo |                                             |
-|           Equip Items | Equip any item in the game (some are buggy) |
+|                Option | Info                                      |
+|----------------------:|:------------------------------------------|
+|    Splash Screen Skip | Skips the start-up screen                 |
+|            Currencies | Add or remove Gold, Iron or Monsterparts  |
+|           Infinite HP |                                           |
+| Infinite Health Flask | Disable flask consumtion                  |
+|         Infinite Ammo |                                           |
+|             Add Items | Add any item in the game (some are buggy) |
 
 # Useful links for development
 
