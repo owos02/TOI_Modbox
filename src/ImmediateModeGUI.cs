@@ -115,13 +115,8 @@ public class ImmediateModeGUI {
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5f);
             }
-            else {
-                GUILayout.FlexibleSpace();
-                GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                GUILayout.Label("No save file selected!");
-                GUI.skin.label.alignment = default;
-                GUILayout.FlexibleSpace();
-            }
+            else
+                NoSaveFileSelected();
         }
 
         if (GUILayout.Button("Close")) _isItemsWindowOpen = false;
@@ -151,6 +146,14 @@ public class ImmediateModeGUI {
     #endregion
 
     #region Control Elements
+
+    private void NoSaveFileSelected() {
+        GUILayout.FlexibleSpace();
+        GUI.skin.label.alignment = TextAnchor.MiddleCenter;
+        GUILayout.Label("No save file selected!");
+        GUI.skin.label.alignment = default;
+        GUILayout.FlexibleSpace();
+    }
 
     private void ButtonToggle(string buttonName, ConfigEntry<bool> toggle, string activeText = "Active", string inactiveText = "Inactive") {
         GUILayout.BeginHorizontal();
