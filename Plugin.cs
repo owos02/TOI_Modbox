@@ -10,6 +10,7 @@ public class Plugin : BaseUnityPlugin {
     internal static Settings settings;
     internal static ImmediateModeGUI imgui = new ImmediateModeGUI();
     internal static EquipGearEvent? itemEquipGearEvent;
+    internal static CollectBlueprintEvent? itemBlueprintEvent;
     private void OnGUI() {
         imgui.Run(ref settings);
     }
@@ -18,6 +19,7 @@ public class Plugin : BaseUnityPlugin {
         // Plugin startup logic
         Logger = base.Logger;
         itemEquipGearEvent = gameObject.AddComponent<EquipGearEvent>();
+        itemBlueprintEvent = gameObject.AddComponent<CollectBlueprintEvent>();
 #if DEBUG
         Logger.LogInfo($"Loading {MyPluginInfo.PLUGIN_GUID} v{MyPluginInfo.PLUGIN_VERSION}");
         Logger.LogWarning($"You are running the debug version of the Plugin!");

@@ -30,7 +30,6 @@ internal partial class TOIPatches {
     [HarmonyPatch(typeof(ItemData), "ManagedAwake")]
     [HarmonyPrefix]
     public static void Patch_PopulateItemData(ItemData __instance) {
-
         if (Plugin.imgui.AllItems != null) return;
         const string dlcPattern = ".*DLC.*";
         gearTypes = Enum.GetValues(typeof(GearType)).Cast<GearType>();
@@ -58,12 +57,13 @@ internal partial class TOIPatches {
     [HarmonyPostfix]
     public static void Patch_ReceiveItem(Player __instance) {
         if (!Plugin.imgui.AddItemEvent) return;
-        
         Plugin.imgui.AddItemEvent = false;
+        var index = Plugin.imgui.SelectedItem;
         var category = (ImmediateModeGUI.ItemCategory)Plugin.imgui.SelectedCategory;
-        if (category == ImmediateModeGUI.ItemCategory.KeyItem) { }
+        if (category == ImmediateModeGUI.ItemCategory.KeyItem) {
+            __instance.m_PlayerInventoryAsset.CollectKeyItem((KeyItems)index);
+        }
         else {
-            var index = Plugin.imgui.SelectedItem;
             Plugin.itemEquipGearEvent!.m_GearType = GetGearType(category);
             Plugin.itemEquipGearEvent.m_OneHandedMeleeWeapon = (OHWeapon)index;
             Plugin.itemEquipGearEvent.m_TwoHandedMeleeWeapon = (THWeapon)index;
@@ -71,8 +71,17 @@ internal partial class TOIPatches {
             Plugin.itemEquipGearEvent.m_Helmet = (Helmets)index;
             Plugin.itemEquipGearEvent.m_Armour = (Armours)index;
             Plugin.itemEquipGearEvent.m_Shield = (Shields)index;
-            __instance.m_PlayerInventoryAsset.Equip(Plugin.itemEquipGearEvent);
+            
+            Plugin.itemBlueprintEvent!.m_GearType = GetGearType(category);
+            Plugin.itemBlueprintEvent.m_OneHandedMeleeWeapon = (OHWeapon)index;
+            Plugin.itemBlueprintEvent.m_TwoHandedMeleeWeapon = (THWeapon)index;
+            Plugin.itemBlueprintEvent.m_RangedWeapon = (RangedWeapons)index;
+            Plugin.itemBlueprintEvent.m_Helmet = (Helmets)index;
+            Plugin.itemBlueprintEvent.m_Armour = (Armours)index;
+            Plugin.itemBlueprintEvent.m_Shield = (Shields)index;
+            if(Plugin.settings.autoEquipAddedItems.Value)
+                __instance.m_PlayerInventoryAsset.Equip(Plugin.itemEquipGearEvent);
+            __instance.m_PlayerInventoryAsset.CollectBlueprint(Plugin.itemBlueprintEvent);
         }
     }
-    
 }

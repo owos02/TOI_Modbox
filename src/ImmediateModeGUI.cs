@@ -104,21 +104,15 @@ public class ImmediateModeGUI {
                 GUILayout.Label("Category");
                 SelectedCategory = GUILayout.SelectionGrid(SelectedCategory, Enum.GetNames(typeof(ItemCategory)), 4);
                 GUILayout.Space(10f);
-                if (SelectedCategory == (int)ItemCategory.KeyItem) {
-                    GUILayout.FlexibleSpace();
-                    GUI.skin.label.alignment = TextAnchor.MiddleCenter;
-                    GUI.color = PluginColors.importantInfoRed;
-                    GUILayout.Label("Key Items not implemented!");
-                    GUI.color = default;
-                    GUI.skin.label.alignment = default;
-                    GUILayout.FlexibleSpace();
-                }
-
                 GUILayout.Label("Item");
                 SelectedItem = GUILayout.SelectionGrid(SelectedItem, AllItems![((ItemCategory)SelectedCategory).ToString()], 5);
                 if (SelectedCategory != PreviousSelected) SelectedItem = 0;
                 GUILayout.FlexibleSpace();
-                if (GUILayout.Button("Equip")) AddItemEvent = true;
+                GUILayout.BeginHorizontal();
+                var addEquip = Plugin.settings.autoEquipAddedItems.Value ? "Add & Equip" : "Add";
+                ButtonToggle("Auto Equip", Plugin.settings.autoEquipAddedItems, "ON", "OFF");
+                if (GUILayout.Button((ItemCategory)SelectedCategory == ItemCategory.KeyItem ? "Add" : addEquip, GUILayout.Width(200f)  )) AddItemEvent = true;
+                GUILayout.EndHorizontal();
                 GUILayout.Space(5f);
             }
             else {
@@ -158,7 +152,7 @@ public class ImmediateModeGUI {
 
     #region Control Elements
 
-    private void ButtonToggle(string buttonName, ConfigEntry<bool> toggle) {
+    private void ButtonToggle(string buttonName, ConfigEntry<bool> toggle, string activeText = "Active", string inactiveText = "Inactive") {
         GUILayout.BeginHorizontal();
         if (GUILayout.Button(buttonName, GUILayout.Width(200f))) {
             toggle.Value = !toggle.Value;
@@ -167,7 +161,7 @@ public class ImmediateModeGUI {
 
         var originalColor = GUI.color;
         GUI.color = toggle.Value ? PluginColors.green : PluginColors.red;
-        GUILayout.Label(toggle.Value ? "Active" : "Inactive");
+        GUILayout.Label(toggle.Value ? activeText : inactiveText);
         GUI.color = originalColor;
         GUILayout.EndHorizontal();
     }

@@ -12,6 +12,7 @@ namespace com.owos02.toi_modbox {
         internal ConfigEntry<bool> configShowModBox;
         internal ConfigEntry<bool> configAlwaysShowModBox;
         internal ConfigEntry<bool> configSplashScreenSkip;
+        internal ConfigEntry<bool> autoEquipAddedItems;
 
         #region Unsaved General Variables
 
@@ -71,6 +72,7 @@ namespace com.owos02.toi_modbox {
             configShowModBox = _config.Bind(new ConfigDefinition(nameof(Categories.General), "ShowModBoxGui"), false, new ConfigDescription("Only for state saving"));
             configAlwaysShowModBox = _config.Bind(new ConfigDefinition(nameof(Categories.General), "AlwaysShowModBox"), false);
             configSplashScreenSkip = _config.Bind(new ConfigDefinition(nameof(Categories.General), "SkipSplashScreen"), true, new ConfigDescription("If enabled, skips to the controller screen"));
+            autoEquipAddedItems = _config.Bind(new ConfigDefinition(nameof(Categories.General), "AutoEquipAddedItems"), true, new ConfigDescription("If enabled, automatically equips items"));
 
             #endregion
 
