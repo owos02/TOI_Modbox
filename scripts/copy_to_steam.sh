@@ -27,7 +27,7 @@ else
 fi
 echo "Copying"
 echo -e "${echo_note_color}Target:      com.owos02.toi_modbox.dll"
-echo "Destination: $HOME/$COM_OWOS02_MODBOX_FOLDER"
+echo "Destination: $HOME/$COM_OWOS02_MODBOX_FOLDER/"
   cp "$MOD_BIN_FOLDER/com.owos02.toi_modbox.dll" "$HOME/$COM_OWOS02_MODBOX_FOLDER"
 echo -e "${echo_success_color}Done!${echo_note_color}"
 

@@ -50,8 +50,8 @@ else
 fi
 
 echo -e "${echo_note_color}Copy start!$"
-echo "  Source: $HOME/$GAME_FOLDER"
-echo "  Target: ${WORKING_DIRECTORY}/$PLUGIN_LIB_FOLDER"
+echo "  Source: $HOME/$GAME_FOLDER/"
+echo "  Target: ${WORKING_DIRECTORY}/$PLUGIN_LIB_FOLDER/"
 for DLL in ${NEEDED_DLLS[@]}; do
   echo -e "${echo_note_color}Copying: ${echo_file_highlight_color}$DLL"
   cp "$HOME/$GAME_FOLDER/$DLL" "$WORKING_DIRECTORY/$PLUGIN_LIB_FOLDER"
