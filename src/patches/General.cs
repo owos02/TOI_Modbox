@@ -14,9 +14,9 @@ internal partial class TOIPatches {
     [HarmonyPatch(typeof(Player), "ManagedOnDestroy")]
     [HarmonyPrefix]
     public static void Patch_UnloadSaveDataFromGUI(Player __instance) {
-        Settings.dataGold = null;
-        Settings.dataIron = null;
-        Settings.dataMonsterParts = null;
+        Settings.dataGold = string.Empty;
+        Settings.dataIron = string.Empty;
+        Settings.dataMonsterParts = string.Empty;
         Settings.saveFile = Settings.NO_SAVE_FILE_SELECTED;
     }
 
