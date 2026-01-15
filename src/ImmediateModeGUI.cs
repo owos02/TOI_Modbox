@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
-using System.Security.Cryptography;
 using UnityEngine;
 
 namespace com.owos02.toi_modbox;
