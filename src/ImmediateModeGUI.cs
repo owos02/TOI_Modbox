@@ -50,7 +50,7 @@ public class ImmediateModeGUI {
         Cursor.lockState = CursorLockMode.None;
         mainWindow = GUILayout.Window(0, mainWindow, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}-alpha");
         if (_isItemsWindowOpen) itemsWindow = GUILayout.Window(1, itemsWindow, ItemsWindow, $"Items");
-        if (_isTeleportWindowOpen) teleportWindow = GUILayout.Window(2, teleportWindow, TeleportWindow, $"Teleport");
+        if (_isTeleportWindowOpen) teleportWindow = GUILayout.Window(2, teleportWindow, TeleportWindow, $"Teleport (Experimental)");
     }
 
     private void MainWindow(int windowID) {
