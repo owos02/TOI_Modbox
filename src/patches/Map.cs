@@ -50,7 +50,6 @@ internal partial class TOIPatches {
     [HarmonyPostfix]
     public static void Patch_GetCurrentLocation(MapManager.LevelSectionLocation mapLocation) {
         Plugin.imgui.CurrentLocation = mapLocation;
-        Plugin.imgui.SelectedLocation = (int)mapLocation;
     }
 
     // ReSharper disable once InconsistentNaming
