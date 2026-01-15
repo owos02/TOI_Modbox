@@ -18,6 +18,8 @@ internal partial class TOIPatches {
         Settings.dataIron = string.Empty;
         Settings.dataMonsterParts = string.Empty;
         Settings.saveFile = Settings.NO_SAVE_FILE_SELECTED;
+        Plugin.imgui.CurrentMap = null;
+        Plugin.imgui.CurrentLocation = null;;
     }
 
     // ReSharper disable once InconsistentNaming

@@ -28,6 +28,7 @@ internal static class PluginColors {
 public class ImmediateModeGUI {
     private static Rect mainWindow = new(Screen.width - 50 - 300, 150, 300, 600);
     private static Rect itemsWindow = new(Screen.width - 900 - 300, 150, 850, 600);
+    private static Rect teleportWindow = new(50, 150, 850, 600);
     private Settings? _settings;
     private bool _foldGeneral;
     private bool _foldPlayer;
@@ -40,6 +41,7 @@ public class ImmediateModeGUI {
 
     internal bool Active { get; set; }
     private bool _isItemsWindowOpen = false;
+    private bool _isTeleportWindowOpen = false;
 
     internal void Run(ref Settings s) {
         _settings ??= s;
@@ -48,6 +50,7 @@ public class ImmediateModeGUI {
         Cursor.lockState = CursorLockMode.None;
         mainWindow = GUILayout.Window(0, mainWindow, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
         if (_isItemsWindowOpen) itemsWindow = GUILayout.Window(1, itemsWindow, ItemsWindow, $"Items");
+        if (_isTeleportWindowOpen) teleportWindow = GUILayout.Window(2, teleportWindow, TeleportWindow, $"Teleport");
     }
 
     private void MainWindow(int windowID) {
@@ -92,7 +95,7 @@ public class ImmediateModeGUI {
 
     private const int StartCategory = (int)ItemCategory.Weapon1H;
     internal int SelectedCategory = StartCategory;
-    internal int PreviousSelected = StartCategory;
+    internal int PreviousSelectedCategory = StartCategory;
     internal int SelectedItem;
     internal Dictionary<string, string[ ]>? AllItems = null;
     internal bool NamesAreLoaded = false;
@@ -106,12 +109,12 @@ public class ImmediateModeGUI {
                 GUILayout.Space(10f);
                 GUILayout.Label("Item");
                 SelectedItem = GUILayout.SelectionGrid(SelectedItem, AllItems![((ItemCategory)SelectedCategory).ToString()], 5);
-                if (SelectedCategory != PreviousSelected) SelectedItem = 0;
+                if (SelectedCategory != PreviousSelectedCategory) SelectedItem = 0;
                 GUILayout.FlexibleSpace();
                 GUILayout.BeginHorizontal();
                 var addEquip = Plugin.settings.autoEquipAddedItems.Value ? "Add & Equip" : "Add";
                 ButtonToggle("Auto Equip", Plugin.settings.autoEquipAddedItems, "ON", "OFF");
-                if (GUILayout.Button((ItemCategory)SelectedCategory == ItemCategory.KeyItem ? "Add" : addEquip, GUILayout.Width(200f)  )) AddItemEvent = true;
+                if (GUILayout.Button((ItemCategory)SelectedCategory == ItemCategory.KeyItem ? "Add" : addEquip, GUILayout.Width(200f))) AddItemEvent = true;
                 GUILayout.EndHorizontal();
                 GUILayout.Space(5f);
             }
@@ -121,7 +124,42 @@ public class ImmediateModeGUI {
 
         if (GUILayout.Button("Close")) _isItemsWindowOpen = false;
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
-        PreviousSelected = SelectedCategory;
+        PreviousSelectedCategory = SelectedCategory;
+    }
+
+    internal int SelectedMap;
+    internal int SelectedLocation;
+    internal MapManager.Maps? CurrentMap = null;
+    internal MapManager.LevelSectionLocation?  CurrentLocation = null;
+    internal bool TeleportToLocationEvent;
+    internal string[ ] Maps = Enum.GetNames(typeof(MapManager.Maps));
+
+    internal string[ ] Entrances = Enum.GetNames(typeof(RatVillageLocation));
+
+    private void TeleportWindow(int windowID) {
+        // if (NamesAreLoaded) {
+        //     if (Settings.saveFile != Settings.NO_SAVE_FILE_SELECTED) {
+                GUILayout.Label("TODO: Better sorting of Locations");
+        
+        string MapString = CurrentMap.ToString() ?? string.Empty;
+        string LocationString = CurrentLocation.ToString() ?? string.Empty;
+        GUILayout.Label($"Current Location: {MapString} - {LocationString}");
+        GUILayout.Label("Maps");
+        // SelectedMap = GUILayout.SelectionGrid(SelectedMap, Enum.GetNames(typeof(MapManager.Maps)), 3);
+        GUILayout.Label("Locations");
+        // SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, AllLocations, 5);
+        SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, Entrances, 4);
+        GUILayout.Space(10f);
+        GUILayout.FlexibleSpace();
+        if (GUILayout.Button("Teleport")) TeleportToLocationEvent = true;
+        GUILayout.Space(5f);
+        // }
+        // else
+        //     NoSaveFileSelected();
+        // }
+        if (GUILayout.Button("Close")) _isTeleportWindowOpen = false;
+        GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
+        PreviousSelectedCategory = SelectedCategory;
     }
 
     #region Options Pages
@@ -132,6 +170,7 @@ public class ImmediateModeGUI {
         ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
         ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
         ButtonToggleOnly((!_isItemsWindowOpen ? "Open" : "Close") + " Item Window", ref _isItemsWindowOpen);
+        ButtonToggleOnly((!_isTeleportWindowOpen ? "Open" : "Close") + " Teleport Window", ref _isTeleportWindowOpen);
     }
 
     private void PlayerOptions() {
