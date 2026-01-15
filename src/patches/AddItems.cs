@@ -71,7 +71,6 @@ internal partial class TOIPatches {
             Plugin.itemEquipGearEvent.m_Helmet = (Helmets)index;
             Plugin.itemEquipGearEvent.m_Armour = (Armours)index;
             Plugin.itemEquipGearEvent.m_Shield = (Shields)index;
-            
             Plugin.itemBlueprintEvent!.m_GearType = GetGearType(category);
             Plugin.itemBlueprintEvent.m_OneHandedMeleeWeapon = (OHWeapon)index;
             Plugin.itemBlueprintEvent.m_TwoHandedMeleeWeapon = (THWeapon)index;
@@ -79,8 +78,7 @@ internal partial class TOIPatches {
             Plugin.itemBlueprintEvent.m_Helmet = (Helmets)index;
             Plugin.itemBlueprintEvent.m_Armour = (Armours)index;
             Plugin.itemBlueprintEvent.m_Shield = (Shields)index;
-            if(Plugin.settings.autoEquipAddedItems.Value)
-                __instance.m_PlayerInventoryAsset.Equip(Plugin.itemEquipGearEvent);
+            if (Plugin.settings.autoEquipAddedItems.Value) __instance.m_PlayerInventoryAsset.Equip(Plugin.itemEquipGearEvent);
             __instance.m_PlayerInventoryAsset.CollectBlueprint(Plugin.itemBlueprintEvent);
         }
     }

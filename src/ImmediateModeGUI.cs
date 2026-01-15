@@ -130,33 +130,32 @@ public class ImmediateModeGUI {
     internal int SelectedMap;
     internal int SelectedLocation;
     internal MapManager.Maps? CurrentMap = null;
-    internal MapManager.LevelSectionLocation?  CurrentLocation = null;
+    internal MapManager.LevelSectionLocation? CurrentLocation = null;
     internal bool TeleportToLocationEvent;
     internal string[ ] Maps = Enum.GetNames(typeof(MapManager.Maps));
-
     internal string[ ] Entrances = Enum.GetNames(typeof(RatVillageLocation));
 
     private void TeleportWindow(int windowID) {
-        // if (NamesAreLoaded) {
-        //     if (Settings.saveFile != Settings.NO_SAVE_FILE_SELECTED) {
+        if (NamesAreLoaded) {
+            if (Settings.saveFile != Settings.NO_SAVE_FILE_SELECTED) {
                 GUILayout.Label("TODO: Better sorting of Locations");
-        
-        string MapString = CurrentMap.ToString() ?? string.Empty;
-        string LocationString = CurrentLocation.ToString() ?? string.Empty;
-        GUILayout.Label($"Current Location: {MapString} - {LocationString}");
-        GUILayout.Label("Maps");
-        // SelectedMap = GUILayout.SelectionGrid(SelectedMap, Enum.GetNames(typeof(MapManager.Maps)), 3);
-        GUILayout.Label("Locations");
-        // SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, AllLocations, 5);
-        SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, Entrances, 4);
-        GUILayout.Space(10f);
-        GUILayout.FlexibleSpace();
-        if (GUILayout.Button("Teleport")) TeleportToLocationEvent = true;
-        GUILayout.Space(5f);
-        // }
-        // else
-        //     NoSaveFileSelected();
-        // }
+                string MapString = CurrentMap.ToString() ?? string.Empty;
+                string LocationString = CurrentLocation.ToString() ?? string.Empty;
+                GUILayout.Label($"Current Location: {MapString} - {LocationString}");
+                GUILayout.Label("Maps");
+                // SelectedMap = GUILayout.SelectionGrid(SelectedMap, Enum.GetNames(typeof(MapManager.Maps)), 3);
+                GUILayout.Label("Locations");
+                // SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, AllLocations, 5);
+                SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, Entrances, 4);
+                GUILayout.Space(10f);
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Teleport")) TeleportToLocationEvent = true;
+                GUILayout.Space(5f);
+            }
+            else
+                NoSaveFileSelected();
+        }
+
         if (GUILayout.Button("Close")) _isTeleportWindowOpen = false;
         GUI.DragWindow(new Rect(0, 0, Screen.width, Screen.height));
         PreviousSelectedCategory = SelectedCategory;
