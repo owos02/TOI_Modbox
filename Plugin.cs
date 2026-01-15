@@ -3,6 +3,7 @@ using BepInEx.Logging;
 using HarmonyLib;
 
 namespace com.owos02.toi_modbox;
+
 [BepInPlugin(MyPluginInfo.PLUGIN_GUID, MyPluginInfo.PLUGIN_NAME, MyPluginInfo.PLUGIN_VERSION)]
 public class Plugin : BaseUnityPlugin {
     internal static new ManualLogSource Logger;
@@ -11,6 +12,7 @@ public class Plugin : BaseUnityPlugin {
     internal static ImmediateModeGUI imgui = new ImmediateModeGUI();
     internal static EquipGearEvent? itemEquipGearEvent;
     internal static CollectBlueprintEvent? itemBlueprintEvent;
+
     private void OnGUI() {
         imgui.Run(ref settings);
     }
@@ -32,7 +34,7 @@ public class Plugin : BaseUnityPlugin {
         _harmony.PatchAll(typeof(TOIPatches));
 // ###
 #if DEBUG
-            Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
+        Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 #endif
 #if RELEASE
             Logger.LogInfo( $"Plugin {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} is loaded!" );
