@@ -8,10 +8,6 @@ A general purpose mod for the game [Tails of Iron (store.steampowered.com)](http
 
 # Install
 
-> [!NOTE]
-> Currently, there are no prebuilt binaries. You have to build them yourself. 
-> Prebuilt binaries will be available when more features are implemented.
-
 ## Windows
 
 1. Install BepInEx by following the [official installation guide (docs.bepinex.dev)](https://docs.bepinex.dev/articles/user_guide/installation/index.html#installing-bepinex-1).
@@ -30,6 +26,10 @@ A general purpose mod for the game [Tails of Iron (store.steampowered.com)](http
 4. Run the game once to generate the folders needed for the next step.
 5. Download the mod from the [releases page (github.com)](https://github.com/owos02/TOI_Modbox/releases).
 6. Extract the zip file and drag the folder into the `Tails of Iron/BepInEx/plugins/` directory.
+
+## Post Installation - Opening the Menu
+
+The mod window will open, when you go into the settings. To keep it on the screen toggle `Always show GUI`.
 
 # Features
 
