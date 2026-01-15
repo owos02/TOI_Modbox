@@ -14,9 +14,9 @@ echo "$(date)"
 readonly GAME_FOLDER='.local/share/Steam/steamapps/common/Tails of Iron'
 readonly BEPIN_PLUGINS_FOLDER="$GAME_FOLDER/BepInEx/plugins"
 readonly COM_OWOS02_MODBOX_FOLDER="$BEPIN_PLUGINS_FOLDER/com.owos02.toi_modbox"
-
+readonly BUILDTYPE='Debug'
 # Dev Folder
-readonly MOD_BIN_FOLDER='bin/Debug/netstandard2.0'
+readonly MOD_BIN_FOLDER="bin/$BUILDTYPE/netstandard2.0"
 
 echo -e -n "${echo_note_color}Does folder $COM_OWOS02_MODBOX_FOLDER exist? "
 if [ ! -d "$HOME/$COM_OWOS02_MODBOX_FOLDER" ]; then
@@ -26,7 +26,7 @@ else
   echo -e "${echo_success_color}YES${echo_note_color}"
 fi
 echo "Copying"
-echo -e "${echo_note_color}Target:      com.owos02.toi_modbox.dll"
+echo -e "${echo_note_color}Target:      com.owos02.toi_modbox.dll - ${BUILDTYPE}"
 echo "Destination: $HOME/$COM_OWOS02_MODBOX_FOLDER/"
   cp "$MOD_BIN_FOLDER/com.owos02.toi_modbox.dll" "$HOME/$COM_OWOS02_MODBOX_FOLDER"
 echo -e "${echo_success_color}Done!${echo_note_color}"
