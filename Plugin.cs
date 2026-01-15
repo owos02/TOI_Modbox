@@ -27,7 +27,7 @@ public class Plugin : BaseUnityPlugin {
         Logger.LogWarning($"You are running the debug version of the Plugin!");
 #endif
 #if RELEASE
-            Logger.LogInfo($"Loading {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}");
+            Logger.LogMessage($"Loading {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION}");
 #endif
 // ###
         settings = new Settings();
@@ -37,7 +37,7 @@ public class Plugin : BaseUnityPlugin {
         Logger.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded!");
 #endif
 #if RELEASE
-            Logger.LogInfo( $"Plugin {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} is loaded!" );
+            Logger.LogMessage( $"Plugin {MyPluginInfo.PLUGIN_NAME} v{MyPluginInfo.PLUGIN_VERSION} is loaded!" );
 #endif
     }
 }
