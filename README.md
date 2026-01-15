@@ -21,7 +21,7 @@ A general purpose mod for the game [Tails of Iron (store.steampowered.com)](http
 ## Linux
 
 > [!IMPORTANT]
-> Follow the BepInEx installation for the windows version and run the game under proton. The native linux version of the game is broken.
+> Follow the BepInEx installation for the Windows version and run the game under proton. The native Linux version of the game is broken.
 
 1. Install BepInEx by following the [official installation guide (docs.bepinex.dev)](https://docs.bepinex.dev/articles/user_guide/installation/index.html#installing-bepinex-1).
 2. In Steam, under "Game Properties" -> "Compatibility", enable "Force the use of a specific Steam Play compatibility tool" (If you don't know which to choose use `Proton Hotfix`) 
@@ -39,6 +39,7 @@ A general purpose mod for the game [Tails of Iron (store.steampowered.com)](http
 | Infinite Health Flask | Disable flask consumtion                  |
 |         Infinite Ammo |                                           |
 |             Add Items | Add any item in the game (some are buggy) |
+|  Teleport to Location | Experimental                              |
 
 # Useful links for development
 
