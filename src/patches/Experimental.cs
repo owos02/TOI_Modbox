@@ -8,7 +8,7 @@ internal partial class TOIPatches {
     [HarmonyPrefix]
     public static void Patch_Experimental_TestingGround(ItemData __instance) {
 #if RELEASE
-        return
+        return;
 #endif
     }
 }
