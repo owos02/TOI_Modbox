@@ -26,7 +26,7 @@ internal static class PluginColors {
 }
 #nullable enable
 public class ImmediateModeGUI {
-    private static Rect mainWindow = new(Screen.width - 50 - 300, 150, 300, 600);
+    private static Rect mainWindow = new(Screen.width - 50 - 300, 250, 300, 600);
     private static Rect itemsWindow = new(Screen.width - 900 - 300, 150, 850, 600);
     private static Rect teleportWindow = new(50, 150, 850, 600);
     private Settings? _settings;
