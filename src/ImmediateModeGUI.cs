@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
+using System.Security.Cryptography;
 using UnityEngine;
 
 namespace com.owos02.toi_modbox;
@@ -48,7 +49,7 @@ public class ImmediateModeGUI {
         if (!Active && !s.configAlwaysShowModBox.Value) return;
         Cursor.visible = Active | s.configAlwaysShowModBox.Value;
         Cursor.lockState = CursorLockMode.None;
-        mainWindow = GUILayout.Window(0, mainWindow, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}");
+        mainWindow = GUILayout.Window(0, mainWindow, MainWindow, $"Tails of Iron Modbox v{MyPluginInfo.PLUGIN_VERSION}-alpha");
         if (_isItemsWindowOpen) itemsWindow = GUILayout.Window(1, itemsWindow, ItemsWindow, $"Items");
         if (_isTeleportWindowOpen) teleportWindow = GUILayout.Window(2, teleportWindow, TeleportWindow, $"Teleport");
     }
@@ -138,11 +139,13 @@ public class ImmediateModeGUI {
     private void TeleportWindow(int windowID) {
         if (NamesAreLoaded) {
             if (Settings.saveFile != Settings.NO_SAVE_FILE_SELECTED) {
-                GUILayout.Label("TODO: Better sorting of Locations");
+                // The names of the locations are unintuitive. Will be fixed later.
+                // Hopefully with community made up names for areas.
+                // Refactoring this and other similar problems with dictionaries would be ideal.
                 string MapString = CurrentMap.ToString() ?? string.Empty;
                 string LocationString = CurrentLocation.ToString() ?? string.Empty;
                 GUILayout.Label($"Current Location: {MapString} - {LocationString}");
-                GUILayout.Label("Maps");
+                // GUILayout.Label("Maps");
                 // SelectedMap = GUILayout.SelectionGrid(SelectedMap, Enum.GetNames(typeof(MapManager.Maps)), 3);
                 GUILayout.Label("Locations");
                 // SelectedLocation = GUILayout.SelectionGrid(SelectedLocation, AllLocations, 5);
