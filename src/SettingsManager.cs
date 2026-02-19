@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using BepInEx;
 using BepInEx.Configuration;
@@ -13,7 +14,9 @@ namespace com.owos02.toi_modbox {
         internal ConfigEntry<bool> configAlwaysShowModBox;
         internal ConfigEntry<bool> configSplashScreenSkip;
         internal ConfigEntry<bool> autoEquipAddedItems;
-
+        internal ConfigEntry<bool> enableRandomizer;
+        internal ConfigEntry<string> randomSeed;
+        internal Random random = new Random();
         #region Unsaved General Variables
 
         internal const int NO_SAVE_FILE_SELECTED = 5;
@@ -73,6 +76,8 @@ namespace com.owos02.toi_modbox {
             configAlwaysShowModBox = _config.Bind(new ConfigDefinition(nameof(Categories.General), "AlwaysShowModBox"), false);
             configSplashScreenSkip = _config.Bind(new ConfigDefinition(nameof(Categories.General), "SkipSplashScreen"), true, new ConfigDescription("If enabled, skips to the controller screen"));
             autoEquipAddedItems = _config.Bind(new ConfigDefinition(nameof(Categories.General), "AutoEquipAddedItems"), true, new ConfigDescription("If enabled, automatically equips items"));
+            enableRandomizer = _config.Bind(new ConfigDefinition(nameof(Categories.General), "EnableRandomizer"), false, new ConfigDescription("If enabled, true randomizes everything"));
+            randomSeed = _config.Bind(new ConfigDefinition(nameof(Categories.General), "RandomSeed"), Guid.NewGuid().GetHashCode().ToString(), new ConfigDescription("The seed of the current randomizer"));
 
             #endregion
 

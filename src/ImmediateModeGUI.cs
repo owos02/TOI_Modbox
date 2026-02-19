@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using BepInEx.Configuration;
 using UnityEngine;
+using Random = System.Random;
 
 namespace com.owos02.toi_modbox;
 
@@ -170,6 +171,8 @@ public class ImmediateModeGUI {
         if (!_foldGeneral) return;
         ButtonToggle("Always show GUI", Plugin.settings.configAlwaysShowModBox);
         ButtonToggle("Splashscreen Skip", Plugin.settings.configSplashScreenSkip);
+        ButtonToggle("Randomize Items", Plugin.settings.enableRandomizer);
+        SeedButton("Random Seed", ref Plugin.settings.randomSeed);
         ButtonToggleOnly((!_isItemsWindowOpen ? "Open" : "Close") + " Item Window", ref _isItemsWindowOpen);
         ButtonToggleOnly((!_isTeleportWindowOpen ? "Open" : "Close") + " Teleport Window", ref _isTeleportWindowOpen);
     }
@@ -225,17 +228,17 @@ public class ImmediateModeGUI {
         GUILayout.Label("Currencies");
         GUILayout.BeginVertical();
         GUILayout.BeginHorizontal();
-        NumberInput("Gold", Settings.dataGold);
+        NumberInput("Gold", ref Settings.dataGold);
         StepwiseButton('+', (_) => Settings.incrementCoin = 1);
         StepwiseButton('-', (_) => Settings.incrementCoin = -1);
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
-        NumberInput("Iron", Settings.dataIron);
+        NumberInput("Iron", ref Settings.dataIron);
         StepwiseButton('+', (_) => Settings.incrementIron = 1);
         StepwiseButton('-', (_) => Settings.incrementIron = -1);
         GUILayout.EndHorizontal();
         GUILayout.BeginHorizontal();
-        NumberInput("Monster Parts", Settings.dataMonsterParts);
+        NumberInput("Monster Parts", ref Settings.dataMonsterParts);
         StepwiseButton('+', (_) => Settings.incrementMonster = 1);
         StepwiseButton('-', (_) => Settings.incrementMonster = -1);
         GUILayout.EndHorizontal();
@@ -243,10 +246,28 @@ public class ImmediateModeGUI {
         GUILayout.EndVertical();
     }
 
-    private static void NumberInput(string label, string data) {
+    private static void NumberInput(string label, ref string data) {
         GUILayout.BeginHorizontal();
         data = GUILayout.TextField(data, GUILayout.MaxWidth(40f));
         GUILayout.Label(label);
+        GUILayout.EndHorizontal();
+    }
+
+    private static void SeedButton(string label, ref ConfigEntry<string> data) {
+        GUILayout.BeginHorizontal();
+        data.Value = GUILayout.TextField(data.Value, GUILayout.MaxWidth(116f));
+        if (GUILayout.Button("Set Seed", GUILayout.MaxWidth(80f))) {
+            if (int.TryParse(data.Value, out int seed)) {
+                Plugin.settings.random = new Random(seed);
+                Plugin.Logger.LogInfo($"Setting Seed: {seed}");
+                TOIPatches.randomizedDictionaryEntries = TOIPatches.RandomizeEquipableItems();
+            }
+        }
+        if (GUILayout.Button("Randomize", GUILayout.MaxWidth(80f))) {
+            Plugin.settings.random = new Random(Guid.NewGuid().GetHashCode());
+            Plugin.Logger.LogInfo($"Setting Seed: {Plugin.settings.random}");
+            TOIPatches.randomizedDictionaryEntries = TOIPatches.RandomizeEquipableItems();
+        }
         GUILayout.EndHorizontal();
     }
 
