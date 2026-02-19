@@ -2,6 +2,8 @@
 
 A general purpose mod for the game [Tails of Iron (store.steampowered.com)](https://store.steampowered.com/app/1283410/Tails_of_Iron/).
 
+![A preview of the options](preview/TOI_Modbox-preview.png)
+
 # Requirements
 
 [BepInEx v5.4.23.4 or higher (github.com)](https://github.com/BepInEx/BepInEx/releases)
@@ -42,6 +44,8 @@ The mod window will open, when you go into the settings. To keep it on the scree
 |         Infinite Ammo |                                           |
 |             Add Items | Add any item in the game (some are buggy) |
 |  Teleport to Location | Experimental                              |
+|       Item Randomizer | True randomized (can be seeded)           |
+
 
 # Useful links for development
 
